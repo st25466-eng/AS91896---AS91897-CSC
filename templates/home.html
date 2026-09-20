@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-box" style="max-width: 800px;">
+    <h2>Welcome to Bakers Home </h2>
+    <p style="line-height: 1.6;">
+        <strong>What I Have Created:</strong><br>
+        Bakers Home is a community thought web application designed to connect local artisan bakeries with customers in real-time. It provides an intuitive platform where bakeries can showcase their daily freshly baked goods and list closing-time specials.
+    </p>
+    <p style="line-height: 1.6;">
+        <strong>Why I Created It:</strong><br>
+        This outcome was built to solve the issue of daily food wastage in local bakeries. Many high-quality baked items go unsold at the end of the day. Bakers Home allows bakeries to sell surplus items at special discounted rates near closing time, giving customers access to delicious treats while promoting local sustainability. Hawk Tuah
+    </p>
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="{{ url_for('bakeries') }}" class="btn">Explore Bakeries & Deals</a>
+    </div>
+</div>
+{% endblock %}

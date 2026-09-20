@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Receipt - Bakers House{% endblock %}
+{% block content %}
+    <h1>Success! Your order is confirmed.</h1>
+    
+    <div style="border: 2px dashed black; padding: 20px; width: 300px; margin-top: 20px;">
+        <h2>Pickup Slip</h2>
+        <!-- Pulls the generated order data from the app.py checkout route -->
+        <p><strong>Order #:</strong> {{ order.order_number }}</p>
+        <p><strong>Name:</strong> {{ order.customer }}</p>
+        <p><strong>Total Due:</strong> ${{ "%.2f"|format(order.total_paid|float) }}</p>
+        
+        <p><em>Please show this number to the bakery before closing time today to collect your order!</em></p>
+    </div>
+    
+    <br><br>
+    <a href="/">Return to Home Page</a>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-box" style="max-width: 800px;">
+    <h2>Your Cart & Checkout</h2>
+
+    {% if cart %}
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--primary-brown); color: var(--primary-brown);">
+                    <th style="padding: 0.6rem;">Bakery</th>
+                    <th style="padding: 0.6rem;">Item</th>
+                    <th style="padding: 0.6rem;">Price</th>
+                    <th style="padding: 0.6rem;">Qty</th>
+                    <th style="padding: 0.6rem;">Subtotal</th>
+                    <th style="padding: 0.6rem;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                <tr style="border-bottom: 1px solid #e0d0c1;">
+                    <!-- Dynamic bakery lookup check -->
+                    <td style="padding: 0.6rem; font-weight: 600;">
+                        {{ item.bakery_name or item.bakery or item.bakery_title or 'Unknown Bakery' }}
+                    </td>
+                    <td style="padding: 0.6rem;">
+                        {{ item.item_name or item.name }}
+                        {% if item.special %}
+                            <span class="special-badge">Special</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 0.6rem;">${{ "%.2f"|format(item.price) }}</td>
+                    <td style="padding: 0.6rem;">{{ item.quantity }}</td>
+                    <td style="padding: 0.6rem; font-weight: bold; color: var(--accent-cinnamon);">${{ "%.2f"|format(item.subtotal or (item.price * item.quantity)) }}</td>
+                    <td style="padding: 0.6rem;">
+                        <a href="{{ url_for('remove_from_cart', index=loop.index0) }}" style="color: #c93b2b; text-decoration: none; font-weight: bold;">✕ Remove</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="background-color: var(--bg-warm); padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: bold; color: var(--primary-brown);">
+                <span>Grand Total:</span>
+                <span>${{ "%.2f"|format(grand_total) }}</span>
+            </div>
+        </div>
+
+        <form action="{{ url_for('checkout') }}" method="POST">
+            <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem;">Place Order Now</button>
+        </form>
+    {% else %}
+        <p style="text-align: center; margin: 2rem 0;">Your cart is currently empty.</p>
+        <div style="text-align: center;">
+            <a href="{{ url_for('bakeries') }}" class="btn">Explore Bakeries & Add Items</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

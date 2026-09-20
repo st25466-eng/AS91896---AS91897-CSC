@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-brown);">Explore Local Bakeries</h2>
+
+<div class="bakery-grid">
+    {% for bakery in bakeries %}
+    <div class="bakery-card">
+        <img src="{{ bakery.image }}" alt="{{ bakery.name }}">
+        <div class="bakery-content">
+            <h3 class="bakery-title">{{ bakery.name }}</h3>
+            <p style="font-size: 0.85rem; color: #676; margin-top: 0;">📍 {{ bakery.location }}</p>
+            
+            <ul class="item-list">
+                {% set products = bakery.products if bakery.products is defined else bakery.items %}
+                {% for item in products %}
+                <li class="item-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                    <div>
+                        <span><strong>{{ item.name }}</strong></span>
+                        {% if item.special %}
+                            <span class="special-badge">Special</span>
+                        {% endif %}
+                        
+                        <!-- Dietary Tags rendering -->
+                        {% if item.dietary %}
+                            <div style="margin-top: 3px;">
+                                {% for tag in item.dietary %}
+                                    <span class="badge">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <br>
+                        <strong style="color: var(--accent-cinnamon);">${{ "%.2f"|format(item.price) }}</strong>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <!-- Direct Add-To-Cart Form -->
+                        <form action="{{ url_for('add_to_cart') }}" method="POST" style="display: flex; gap: 0.3rem; align-items: center;">
+                            <input type="hidden" name="bakery_id" value="{{ bakery.id }}">
+                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                            <input type="number" name="quantity" value="1" min="1" max="20" style="width: 45px; padding: 0.3rem; border-radius: 4px; border: 1px solid #ccc; text-align: center;">
+                            <button type="submit" class="btn btn-sm">+ Add</button>
+                        </form>
+
+                        <!-- Delete Item Button (Bakery Owners Only) -->
+                        {% if session.get('account_type') == 'Bakery Owner' %}
+                            <form action="{{ url_for('delete_item', bakery_id=bakery.id, item_id=item.id) }}" method="POST" style="margin: 0;">
+                                <button type="submit" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-sm" style="background-color: #dc3545; color: white; border: none; padding: 0.3rem 0.5rem; border-radius: 4px; cursor: pointer;">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Add Item Form (Bakery Owners Only) -->
+            {% if session.get('account_type') == 'Bakery Owner' %}
+                <hr style="margin: 1rem 0; border: 0; border-top: 1px solid #eee;">
+                <h4 style="margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--primary-brown);">Add Item to {{ bakery.name }}</h4>
+                <form action="{{ url_for('add_item_to_bakery', bakery_id=bakery.id) }}" method="POST" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <input type="text" name="item_names[]" required placeholder="Item name" style="padding: 0.4rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="number" step="0.01" min="1.00" name="item_prices[]" required placeholder="Price ($1.00+)" style="padding: 0.4rem; border: 1px solid #ccc; border-radius: 4px;">
+                    
+                    <!-- Dietary Tags Checkboxes -->
+                    <div style="font-size: 0.85rem; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.2rem;">
+                        <label><input type="checkbox" name="item_dietary_0" value="Vegan"> Vegan</label>
+                        <label><input type="checkbox" name="item_dietary_0" value="Gluten-Free"> Gluten-Free</label>
+                        <label><input type="checkbox" name="item_dietary_0" value="Dairy-Free"> Dairy-Free</label>
+                        <label><input type="checkbox" name="item_dietary_0" value="Nut-Free"> Nut-Free</label>
+                        <label><input type="checkbox" name="item_specials[]" value="0"> Special</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-sm" style="align-self: flex-start; margin-top: 0.4rem;">+ Add Item</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

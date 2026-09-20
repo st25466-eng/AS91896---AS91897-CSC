@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-box" style="max-width: 600px; margin: 2rem auto;">
+    <h2>Add Your Bakery</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 6px; background-color: #f8d7da; color: #721c24;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('add_bakery') }}" method="POST">
+        <h3>Bakery Details</h3>
+        <div class="form-group">
+            <label for="bakery_name">Bakery Name:</label>
+            <input type="text" id="bakery_name" name="bakery_name" required placeholder="e.g. Sunny Crust Bakery">
+        </div>
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required placeholder="e.g. Central District">
+        </div>
+        <div class="form-group">
+            <label for="closing_time">Closing Time:</label>
+            <input type="text" id="closing_time" name="closing_time" required placeholder="e.g. 5:00 PM">
+        </div>
+        <div class="form-group">
+            <label for="image_url">Image URL (Optional):</label>
+            <input type="url" id="image_url" name="image_url" placeholder="https://images.unsplash.com/...">
+        </div>
+
+        <hr style="margin: 1.5rem 0;">
+
+        <h3>Menu Items</h3>
+        <div id="items-container">
+            <!-- Initial Default Item -->
+            <div class="item-block" style="border: 1px dashed #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 6px; position: relative;">
+                <h4 class="item-title">Item 1</h4>
+                <div class="form-group">
+                    <label>Item Name:</label>
+                    <input type="text" name="item_names[]" required placeholder="e.g. Artisan Cinnamon Roll">
+                </div>
+                <div class="form-group">
+                    <label>Price ($):</label>
+                    <input type="number" step="0.01" min="1.00" name="item_prices[]" required placeholder="4.50">
+                </div>
+                <div class="form-group">
+                    <label>Dietary Tags:</label><br>
+                    <input type="checkbox" name="item_dietary_0" value="Vegetarian"> Vegetarian
+                    <input type="checkbox" name="item_dietary_0" value="Vegan"> Vegan
+                    <input type="checkbox" name="item_dietary_0" value="Gluten-Free"> Gluten-Free
+                    <input type="checkbox" name="item_dietary_0" value="Halal"> Halal
+                    <input type="checkbox" name="item_dietary_0" value="Dairy-Free"> Dairy-Free
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" name="item_specials[]" value="0"> Is Closing Special Item?</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Item Button -->
+        <button type="button" id="add-item-btn" class="btn" style="background-color: #6c757d; width: 100%; margin-bottom: 1rem;">+ Add Another Item</button>
+
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Add Bakery & Menu</button>
+    </form>
+</div>
+
+<!-- Dynamic JavaScript Handler -->
+<script>
+    let itemCounter = 1;
+
+    function updateItemNumbers() {
+        const blocks = document.querySelectorAll('#items-container .item-block');
+        blocks.forEach((block, index) => {
+            const title = block.querySelector('.item-title');
+            if (title) {
+                title.textContent = `Item ${index + 1}`;
+            }
+        });
+    }
+
+    document.getElementById('add-item-btn').addEventListener('click', function() {
+        const container = document.getElementById('items-container');
+        const index = itemCounter++;
+
+        const itemBlock = document.createElement('div');
+        itemBlock.className = 'item-block';
+        itemBlock.style.cssText = 'border: 1px dashed #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 6px; position: relative;';
+        
+        itemBlock.innerHTML = `
+            <button type="button" class="remove-btn" style="position: absolute; top: 1rem; right: 1rem; background: #dc3545; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer;">Remove</button>
+            <h4 class="item-title">Item</h4>
+            <div class="form-group">
+                <label>Item Name:</label>
+                <input type="text" name="item_names[]" required placeholder="e.g. Sourdough Loaf">
+            </div>
+            <div class="form-group">
+                <label>Price ($):</label>
+                <input type="number" step="0.01" min="1.00" name="item_prices[]" required placeholder="6.00">
+            </div>
+            <div class="form-group">
+                <label>Dietary Tags:</label><br>
+                <input type="checkbox" name="item_dietary_${index}" value="Vegetarian"> Vegetarian
+                <input type="checkbox" name="item_dietary_${index}" value="Vegan"> Vegan
+                <input type="checkbox" name="item_dietary_${index}" value="Gluten-Free"> Gluten-Free
+                <input type="checkbox" name="item_dietary_${index}" value="Halal"> Halal
+                <input type="checkbox" name="item_dietary_${index}" value="Dairy-Free"> Dairy-Free
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="item_specials[]" value="${index}"> Is Closing Special Item?</label>
+            </div>
+        `;
+
+        itemBlock.querySelector('.remove-btn').addEventListener('click', function() {
+            const totalBlocks = document.querySelectorAll('#items-container .item-block').length;
+            if (totalBlocks > 1) {
+                itemBlock.remove();
+                updateItemNumbers();
+            } else {
+                alert("You must have at least one product for the bakery.");
+            }
+        });
+        
+        container.appendChild(itemBlock);
+        updateItemNumbers();
+    });
+</script>
+{% endblock %}

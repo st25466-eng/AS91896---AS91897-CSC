@@ -1,0 +1,455 @@
+{
+  "users": [
+    {
+      "username": "tyson1",
+      "email": "tyson1@gmail.com",
+      "password": "wasd",
+      "account_type": "Bakery Owner"
+    }
+  ],
+  "bakeries": [
+    {
+      "id": 1,
+      "name": "tysontest",
+      "location": "City",
+      "closing_time": "5:00 PM",
+      "image": "https://media.istockphoto.com/id/2239216089/photo/crafting-bread-fresh-crispy-craft-hand-made-food-fresh-baked-bread-bagels-buns-baked-goods-in.jpg?s=2048x2048&w=is&k=20&c=24OztL6DjlPU6MTVWq1DuKIIQ9YiJjRA4mXaRUIry00=",
+      "products": [
+        {
+          "id": 101,
+          "name": "Croissant",
+          "price": 3.0,
+          "dietary": [
+            "Vegan"
+          ],
+          "special": false
+        },
+        {
+          "id": 102,
+          "name": "Pie",
+          "price": 5.0,
+          "dietary": [],
+          "special": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Cinnamon & Co",
+      "location": "Central District",
+      "closing_time": "5:00 PM",
+      "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+      "products": [
+        {
+          "id": 201,
+          "name": "Signature Cinnamon Roll",
+          "price": 4.5,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        },
+        {
+          "id": 202,
+          "name": "Vegan Pecan Sticky Bun",
+          "price": 5.2,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        },
+        {
+          "id": 203,
+          "name": "Apple Cinnamon Swirl",
+          "price": 4.0,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 204,
+          "name": "Gluten-Free Spice Muffin",
+          "price": 4.8,
+          "dietary": [
+            "Gluten-Free",
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Golden Hearth Bakery",
+      "location": "Old Town",
+      "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80",
+      "closing_time": "4:30 PM",
+      "products": [
+        {
+          "id": 301,
+          "name": "Golden Brioche Loaf",
+          "price": 6.8,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 302,
+          "name": "Beef Sausage Roll",
+          "price": 5.5,
+          "dietary": [
+            "Halal"
+          ],
+          "special": true
+        },
+        {
+          "id": 303,
+          "name": "Honey Butter Croissant",
+          "price": 4.2,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 304,
+          "name": "Vegan Oat & Jam Cookie",
+          "price": 3.5,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Sweet Artisan Treats",
+      "location": "Eastside Mall",
+      "image": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=600&q=80",
+      "closing_time": "6:00 PM",
+      "products": [
+        {
+          "id": 401,
+          "name": "Gluten-Free Chocolate Tart",
+          "price": 5.8,
+          "dietary": [
+            "Gluten-Free",
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        },
+        {
+          "id": 402,
+          "name": "Raspberry Macaron 4-Pack",
+          "price": 7.5,
+          "dietary": [
+            "Gluten-Free",
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 403,
+          "name": "Vegan Vanilla Cupcake",
+          "price": 4.0,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        },
+        {
+          "id": 404,
+          "name": "Lemon Meringue Slice",
+          "price": 5.0,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "The Rustic Loaf",
+      "location": "North Market",
+      "image": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=600&q=80",
+      "closing_time": "5:30 PM",
+      "products": [
+        {
+          "id": 501,
+          "name": "Artisan Country Sourdough",
+          "price": 7.0,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        },
+        {
+          "id": 502,
+          "name": "Seeded Rye Bread",
+          "price": 6.5,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": true
+        },
+        {
+          "id": 503,
+          "name": "Garlic & Herb Focaccia",
+          "price": 5.5,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        },
+        {
+          "id": 504,
+          "name": "Olive & Rosemary Baguette",
+          "price": 4.8,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Honey & Flour",
+      "location": "Riverside",
+      "image": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=600&q=80",
+      "closing_time": "4:00 PM",
+      "products": [
+        {
+          "id": 601,
+          "name": "Honey Almond Cake Slice",
+          "price": 4.8,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        },
+        {
+          "id": 602,
+          "name": "Whole Wheat Honey Bread",
+          "price": 6.2,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 603,
+          "name": "Vegan Lemon Poppyseed Muffin",
+          "price": 3.9,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        },
+        {
+          "id": 604,
+          "name": "Gluten-Free Honey Scone",
+          "price": 4.5,
+          "dietary": [
+            "Gluten-Free",
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Butter & Crumb",
+      "location": "West End",
+      "image": "https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=600&q=80",
+      "closing_time": "5:00 PM",
+      "products": [
+        {
+          "id": 701,
+          "name": "Classic Almond Croissant",
+          "price": 4.5,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 702,
+          "name": "Spinach & Ricotta Danish",
+          "price": 5.2,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        },
+        {
+          "id": 703,
+          "name": "Plant-Based Sausage Roll",
+          "price": 5.8,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        },
+        {
+          "id": 704,
+          "name": "Chocolate Chip Shortbread",
+          "price": 3.6,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Oven Fresh Delights",
+      "location": "South Plaza",
+      "image": "https://images.unsplash.com/photo-1511018556340-d16986a1c194?auto=format&fit=crop&w=600&q=80",
+      "closing_time": "6:30 PM",
+      "products": [
+        {
+          "id": 801,
+          "name": "Halal Chicken & Mushroom Pie",
+          "price": 6.9,
+          "dietary": [
+            "Halal"
+          ],
+          "special": true
+        },
+        {
+          "id": 802,
+          "name": "Vegan Vegetable Pastry",
+          "price": 5.4,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": false
+        },
+        {
+          "id": 803,
+          "name": "Gluten-Free Blueberry Tart",
+          "price": 5.0,
+          "dietary": [
+            "Gluten-Free",
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 804,
+          "name": "Fresh Cinnamon Twist",
+          "price": 3.8,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "The Warm Oven",
+      "location": "High Street",
+      "image": "https://images.unsplash.com/photo-1579372786545-d24232daf58c?auto=format&fit=crop&w=600&q=80",
+      "closing_time": "5:00 PM",
+      "products": [
+        {
+          "id": 901,
+          "name": "Traditional Butter Sourdough",
+          "price": 6.4,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 902,
+          "name": "Vegan Apple Turnover",
+          "price": 4.2,
+          "dietary": [
+            "Vegan",
+            "Vegetarian",
+            "Halal",
+            "Dairy-Free"
+          ],
+          "special": true
+        },
+        {
+          "id": 903,
+          "name": "Halal Cheese & Herb Bun",
+          "price": 4.6,
+          "dietary": [
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": false
+        },
+        {
+          "id": 904,
+          "name": "Gluten-Free Brownie Bite",
+          "price": 3.9,
+          "dietary": [
+            "Gluten-Free",
+            "Vegetarian",
+            "Halal"
+          ],
+          "special": true
+        }
+      ]
+    }
+  ]
+}
