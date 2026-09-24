@@ -1,18 +1,24 @@
 {% extends "base.html" %}
-{% block title %}Receipt - Bakers House{% endblock %}
+
+{% block title %}Receipt - Bakers Home{% endblock %}
+
 {% block content %}
-    <h1>Success! Your order is confirmed.</h1>
+<div class="receipt-container text-center">
+    <h1 class="receipt-title">Success! Your order is confirmed.</h1>
     
-    <div style="border: 2px dashed black; padding: 20px; width: 300px; margin-top: 20px;">
+    <div class="pickup-slip">
         <h2>Pickup Slip</h2>
         <!-- Pulls the generated order data from the app.py checkout route -->
-        <p><strong>Order #:</strong> {{ order.order_number }}</p>
-        <p><strong>Name:</strong> {{ order.customer }}</p>
-        <p><strong>Total Due:</strong> ${{ "%.2f"|format(order.total_paid|float) }}</p>
+        <p><strong>Order #:</strong> {{ order.order_number or order.id or 'N/A' }}</p>
+        <p><strong>Name:</strong> {{ order.customer or order.name or session.get('user', 'Valued Customer') }}</p>
+        <p><strong>Total Due:</strong> ${{ "%.2f"|format((order.total_paid or order.total_price or 0)|float) }}</p>
         
-        <p><em>Please show this number to the bakery before closing time today to collect your order!</em></p>
+        <p class="pickup-note"><em>Please show this number to the bakery before closing time today to collect your order!</em></p>
     </div>
     
-    <br><br>
-    <a href="/">Return to Home Page</a>
+    <div class="receipt-actions no-print">
+        <button onclick="window.print()" class="btn btn-secondary">🖨️ Print Pickup Slip</button>
+        <a href="{{ url_for('home') }}" class="btn btn-home">Return to Home Page</a>
+    </div>
+</div>
 {% endblock %}
