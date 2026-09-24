@@ -5,6 +5,12 @@
       "email": "tyson1@gmail.com",
       "password": "wasd",
       "account_type": "Bakery Owner"
+    },
+    {
+      "username": "tysonuser",
+      "email": "tysonuser@gmail.com",
+      "password": "password",
+      "account_type": "Customer"
     }
   ],
   "bakeries": [
