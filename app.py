@@ -1,11 +1,14 @@
-import json, os
+import json
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 
 app = Flask(__name__)
-app.secret_key = "superdupersuperkey"  
+app.secret_key = "superdupersuperkey"
 DATA_FILE = "data.json"
 
-# --- HELPER FUNCTIONS ---
+# ==============================================================================
+# HELPER FUNCTIONS & DATA MANAGERS
+# ==============================================================================
 
 def get_data(key=None):
     """Loads JSON data safely and optionally returns a specific top-level key."""
@@ -14,7 +17,8 @@ def get_data(key=None):
             with open(DATA_FILE, "r") as f:
                 data = json.load(f)
                 return data.get(key, []) if key else data
-        except json.JSONDecodeError: pass
+        except json.JSONDecodeError:
+            pass
     return [] if key else {"users": [], "bakeries": []}
 
 def save_data(data):
@@ -46,19 +50,20 @@ def parse_items(names, prices, specials, base_id):
     for i, name in enumerate(names):
         if name.strip():
             base_id += 1
-            price = float(prices[i]) if i < len(prices) and prices[i] else 1.00
+            price = float(prices[i]) if i < len(prices) and prices[i].strip() else 1.00
             items.append({
                 "id": base_id,
                 "name": name.strip(),
                 "price": round(price, 2),
-                # Grabs dynamic dietary checkboxes (item_dietary_0, item_dietary_1, etc.)
                 "dietary": request.form.getlist(f"item_dietary_{i}"),
-                "special": str(i) in specials
+                "special": str(i) in specials or f"special_{i}" in specials
             })
     return items, base_id
 
 
-# --- ROUTE HANDLERS ---
+# ==============================================================================
+# ROUTE HANDLERS & NAVIGATION
+# ==============================================================================
 
 @app.route("/")
 def home():
@@ -73,29 +78,37 @@ def bakeries():
 @app.route("/add_bakery", methods=["GET", "POST"])
 def add_bakery():
     """Allows bakery owners to register a new bakery and its initial menu."""
-    if not require_owner(): return redirect(url_for("bakeries"))
+    if not require_owner():
+        return redirect(url_for("bakeries"))
     
     if request.method == "POST":
-        names, prices = request.form.getlist("item_names[]"), request.form.getlist("item_prices[]")
-        if not request.form.get("bakery_name") or not names or not validate_prices(prices):
+        names = request.form.getlist("item_names[]")
+        prices = request.form.getlist("item_prices[]")
+        bakery_name = request.form.get("bakery_name")
+
+        if not bakery_name or not names or not validate_prices(prices):
             return render_template("add_bakery.html")
 
         data = get_data()
-        # Generate new auto-incremented bakery ID
         new_id = max([b["id"] for b in data["bakeries"]], default=0) + 1
-        products, _ = parse_items(names, prices, request.form.getlist("item_specials[]"), new_id * 100)
+        specials = request.form.getlist("item_specials[]")
+        products, _ = parse_items(names, prices, specials, new_id * 100)
 
-        # Append new bakery object
+        image_url = request.form.get("image_url", "").strip()
+        if not image_url:
+            image_url = "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop"
+
         data["bakeries"].append({
             "id": new_id,
-            "name": request.form.get("bakery_name"),
+            "name": bakery_name,
             "location": request.form.get("location"),
             "closing_time": request.form.get("closing_time"),
-            "image": request.form.get("image_url") or "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop",
+            "image": image_url,
             "products": products
         })
+        
         save_data(data)
-        flash(f"'{request.form.get('bakery_name')}' added successfully!", "success")
+        flash(f"'{bakery_name}' added successfully!", "success")
         return redirect(url_for("bakeries"))
         
     return render_template("add_bakery.html")
@@ -103,18 +116,22 @@ def add_bakery():
 @app.route("/bakery/<int:bakery_id>/add_item", methods=["POST"])
 def add_item_to_bakery(bakery_id):
     """Allows bakery owners to add menu items directly to an existing bakery card."""
-    if not require_owner(): return redirect(url_for("bakeries"))
+    if not require_owner():
+        return redirect(url_for("bakeries"))
     
-    names, prices = request.form.getlist("item_names[]"), request.form.getlist("item_prices[]")
+    names = request.form.getlist("item_names[]")
+    prices = request.form.getlist("item_prices[]")
+    
     if not names or not names[0].strip() or not validate_prices(prices):
         return redirect(url_for("bakeries"))
 
     data = get_data()
-    # Find matching bakery by ID
     bakery = next((b for b in data["bakeries"] if b["id"] == bakery_id), None)
+    
     if bakery:
         max_id = max([p["id"] for p in bakery.get("products", [])], default=bakery_id * 100)
-        new_items, _ = parse_items(names, prices, request.form.getlist("item_specials[]"), max_id)
+        specials = request.form.getlist("item_specials[]")
+        new_items, _ = parse_items(names, prices, specials, max_id)
         bakery["products"] = bakery.get("products", []) + new_items
         save_data(data)
         flash(f"Added item(s) to '{bakery['name']}'!", "success")
@@ -124,13 +141,13 @@ def add_item_to_bakery(bakery_id):
 @app.route("/delete_item/<int:bakery_id>/<int:item_id>", methods=["POST"])
 def delete_item(bakery_id, item_id):
     """Deletes a specific product from a bakery's menu list."""
-    if not require_owner(): return redirect(url_for("bakeries"))
+    if not require_owner():
+        return redirect(url_for("bakeries"))
     
     data = get_data()
     for bakery in data["bakeries"]:
         if bakery["id"] == bakery_id:
             original_len = len(bakery.get("products", []))
-            # Keep all items except the one matching item_id
             bakery["products"] = [p for p in bakery.get("products", []) if p["id"] != item_id]
             if len(bakery["products"]) < original_len:
                 save_data(data)
@@ -141,11 +158,12 @@ def delete_item(bakery_id, item_id):
 
 @app.route("/add_to_cart", methods=["POST"])
 def add_to_cart():
-    """Adds a item and chosen quantity to the user's session cart (Max limit: 20)."""
-    b_id, i_id = request.form.get("bakery_id", type=int), request.form.get("item_id", type=int)
+    """Adds an item and chosen quantity to the user's session cart (Limit: 20 per item)."""
+    b_id = request.form.get("bakery_id", type=int)
+    i_id = request.form.get("item_id", type=int)
     qty = request.form.get("quantity", 1, type=int)
 
-    if not (1 <= qty <= 20):
+    if not qty or not (1 <= qty <= 20):
         flash("Invalid quantity! Must order between 1 and 20.", "error")
         return redirect(url_for("bakeries"))
 
@@ -155,7 +173,6 @@ def add_to_cart():
 
     if bakery and item:
         cart = session.setdefault("cart", [])
-        # If item is already in cart, update quantity
         for c in cart:
             if c["item_id"] == i_id and c["bakery_id"] == b_id:
                 if c["quantity"] + qty > 20:
@@ -166,7 +183,6 @@ def add_to_cart():
                 flash(f"Added {qty}x '{item['name']}' to cart!", "success")
                 return redirect(url_for("bakeries"))
 
-        # Add new item row to cart
         cart.append({
             "bakery_id": b_id, 
             "bakery_name": bakery["name"], 
@@ -201,7 +217,7 @@ def checkout():
         if not cart:
             flash("Your cart is empty!", "error")
             return redirect(url_for("bakeries"))
-        session.pop("cart", None) # Clear cart on successful checkout
+        session.pop("cart", None)
         flash(f"Order placed! Total: ${total:.2f}. Thank you!", "success")
         return redirect(url_for("bakeries"))
         
@@ -211,9 +227,9 @@ def checkout():
 def signup():
     """Handles user account registration (Customer vs Bakery Owner)."""
     if request.method == "POST":
-        u = request.form.get("username")
-        e = request.form.get("email")
-        p = request.form.get("password")
+        u = request.form.get("username", "").strip()
+        e = request.form.get("email", "").strip()
+        p = request.form.get("password", "").strip()
         acc = request.form.get("account_type", "Customer")
         
         if not u or not e or not p:
@@ -236,7 +252,10 @@ def signup():
 def login():
     """Authenticates credentials against JSON users and sets session state."""
     if request.method == "POST":
-        user = next((u for u in get_data("users") if u["email"] == request.form.get("email") and u["password"] == request.form.get("password")), None)
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+        
+        user = next((u for u in get_data("users") if u["email"] == email and u["password"] == password), None)
         if user:
             session.update({"user": user["email"], "username": user["username"], "account_type": user["account_type"]})
             flash("Logged in successfully!", "success")
@@ -247,7 +266,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    """Logs out user by clearing the session data."""
+    """Logs out user by clearing session data."""
     session.clear()
     flash("You have been logged out.", "success")
     return redirect(url_for("home"))
