@@ -1,58 +1,62 @@
 {% extends "base.html" %}
 
+{% block title %}Your Cart & Checkout - Bakers Home{% endblock %}
+
 {% block content %}
-<div class="form-box" style="max-width: 800px;">
-    <h2>Your Cart & Checkout</h2>
+<div class="form-box checkout-container">
+    <h2 class="page-title">Your Cart & Checkout</h2>
 
     {% if cart %}
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; text-align: left;">
+        <table class="checkout-table">
             <thead>
-                <tr style="border-bottom: 2px solid var(--primary-brown); color: var(--primary-brown);">
-                    <th style="padding: 0.6rem;">Bakery</th>
-                    <th style="padding: 0.6rem;">Item</th>
-                    <th style="padding: 0.6rem;">Price</th>
-                    <th style="padding: 0.6rem;">Qty</th>
-                    <th style="padding: 0.6rem;">Subtotal</th>
-                    <th style="padding: 0.6rem;">Action</th>
+                <tr>
+                    <th>Bakery</th>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in cart %}
-                <tr style="border-bottom: 1px solid #e0d0c1;">
+                <tr>
                     <!-- Dynamic bakery lookup check -->
-                    <td style="padding: 0.6rem; font-weight: 600;">
+                    <td class="bakery-col">
                         {{ item.bakery_name or item.bakery or item.bakery_title or 'Unknown Bakery' }}
                     </td>
-                    <td style="padding: 0.6rem;">
+                    <td>
                         {{ item.item_name or item.name }}
                         {% if item.special %}
                             <span class="special-badge">Special</span>
                         {% endif %}
                     </td>
-                    <td style="padding: 0.6rem;">${{ "%.2f"|format(item.price) }}</td>
-                    <td style="padding: 0.6rem;">{{ item.quantity }}</td>
-                    <td style="padding: 0.6rem; font-weight: bold; color: var(--accent-cinnamon);">${{ "%.2f"|format(item.subtotal or (item.price * item.quantity)) }}</td>
-                    <td style="padding: 0.6rem;">
-                        <a href="{{ url_for('remove_from_cart', index=loop.index0) }}" style="color: #c93b2b; text-decoration: none; font-weight: bold;">✕ Remove</a>
+                    <td>${{ "%.2f"|format(item.price) }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td class="subtotal-col">${{ "%.2f"|format(item.subtotal or (item.price * item.quantity)) }}</td>
+                    <td>
+                        <form action="{{ url_for('remove_from_cart', index=loop.index0) }}" method="POST" class="inline-form">
+                            <button type="submit" class="btn-remove">✕ Remove</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <div style="background-color: var(--bg-warm); padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: bold; color: var(--primary-brown);">
+        <div class="cart-summary-box">
+            <div class="grand-total-row">
                 <span>Grand Total:</span>
                 <span>${{ "%.2f"|format(grand_total) }}</span>
             </div>
         </div>
 
         <form action="{{ url_for('checkout') }}" method="POST">
-            <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem;">Place Order Now</button>
+            <button type="submit" class="btn btn-full">Place Order Now</button>
         </form>
     {% else %}
-        <p style="text-align: center; margin: 2rem 0;">Your cart is currently empty.</p>
-        <div style="text-align: center;">
+        <p class="cart-empty-message">Your cart is currently empty.</p>
+        <div class="text-center">
             <a href="{{ url_for('bakeries') }}" class="btn">Explore Bakeries & Add Items</a>
         </div>
     {% endif %}
